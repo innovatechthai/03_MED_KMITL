@@ -1,0 +1,32 @@
+sudo apt-get update
+sudo apt-get upgrade
+
+wget https://nodejs.org/dist/v8.9.0/node-v8.9.0-linux-armv6l.tar.gz
+tar -xzf node-v8.9.0-linux-armv6l.tar.gz
+cd node-v8.9.0-linux-armv6l/
+sudo cp -R * /usr/local/
+node -v
+npm -v
+
+wget https://download.opensuse.org/repositories/network:/messaging:/zeromq:/release-stable/Debian_9.0/Release.key -O- | sudo apt-key add
+sudo apt-get install libzmq3-dev
+
+spidev.buffer=131072
+
+
+rm pigpio.zip
+sudo rm -rf PIGPIO
+wget abyz.me.uk/rpi/pigpio/pigpio.zip
+unzip pigpio.zip
+cd PIGPIO
+make
+sudo make install
+
+
+npm install onoff
+
+
+npm install --save sht31
+
+
+sudo nano /etc/xdg/lxsession/LXDE-pi/autostart
