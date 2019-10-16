@@ -22,6 +22,7 @@
 	  var tempCen;
 	  var tempMax;
 	  var tempMin;
+	  var num;
 	  var data = 0;
 	
 	socket.on('connect', function () { 
