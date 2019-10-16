@@ -3,31 +3,38 @@
   $(function () {
 
       var socket = io();
-
       var canvas = document.getElementById('canvas');
-
       var TMAX = document.getElementById('TMAX');
       var TMIN = document.getElementById('TMIN');
       var TCEN = document.getElementById('TCEN');
-
       var Amb = document.getElementById('Amb');
       var Range = document.getElementById('Range');
       var Target = document.getElementById('Target');
-
       var STATUS = document.getElementById('STATUS');
-
       var ctx = canvas.getContext('2d');
 
       ctx.fillRect(0, 0, canvas.width, canvas.height);
 
       var imageData = ctx.getImageData(0, 0, canvas.width, canvas.height);
 
-	  var ambTemp = 25.0;
-	  var distance = 0.0;
-	  var tempCen = 37.0;
-	  var tempMax = 37.0;
-	  var tempMin = 0;
-	  
+	  var ambTemp;
+	  var distance;
+	  var tempCen;
+	  var tempMax;
+	  var tempMin;
+	  var data = 0;
+	
+	socket.on('connect', function () { 
+		socket.emit('calibration', data);
+		$(document).ready(function(){
+			$('#MyButton').click(function(){
+				num = document.getElementById('cal').value;
+				data = num - tempMax;
+				socket.emit('calibration', data);
+			});
+		  });
+	});
+
 	socket.on('distance', function(msg) {
 		distance = msg;
 	});
@@ -78,14 +85,9 @@
 
           var pixelValue = parseInt((intData[c] - min) / range * 254);
 
-          // var pixelValue = parseInt(intData[c] / 16384 * 255);
-
           imageData.data[(c * 4) + 0] = gradients.fusion[pixelValue][0];
-
           imageData.data[(c * 4) + 1] = gradients.fusion[pixelValue][1];
-
           imageData.data[(c * 4) + 2] = gradients.fusion[pixelValue][2];
-
         }
 
     ctx.putImageData(imageData, 0, 0);
@@ -104,39 +106,25 @@
     if (distance >= 50 && distance <= 80) 
 
 		{ 
-
 			Target.innerHTML = "ตรวจ:  " + "พบ";
-
 		} 
     else
 		{ 
-
 			Target.innerHTML = "ตรวจ:  " + "ไม่พบ";
-
 		} 
 
     if (tempCen >= 38.0 && tempCen < 41.5) 
-
 		{ 
-
 			STATUS.innerHTML = "สถานะไข้สูง เกิน 38°C";
-
 		} 
 
     else if (tempCen >= 41.5) 
-
 		{
-
 			STATUS.innerHTML = "สถานะไข้สูงอย่างรุนแรง เกิน 41.5°C";
-
 		}
-
 	else
-
 		{
-
 			STATUS.innerHTML = "สถานะไข้ต่ำ ไม่เกิน 38°C";
-
 		}
 	}
     });
